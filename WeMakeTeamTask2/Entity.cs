@@ -7,7 +7,7 @@
         bool _amountIsSet;
 
         Guid _id;
-        DateTime _operationDate;
+        DateTimeOffset _operationDate;
         decimal _amount;
 
         
@@ -21,8 +21,7 @@
             }
         }
 
-        // вместо DateTime лучше использовать DateTimeOffset
-        public DateTime OperationDate 
+        public DateTimeOffset OperationDate 
         {
             get => _operationDate;            
             set

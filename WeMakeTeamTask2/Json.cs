@@ -17,7 +17,7 @@ namespace WeMakeTeamTask2
                 Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
 
             };
-            options.Converters.Add(new DateTimeConverter4Json('O'));
+            options.Converters.Add(new DateTimeOffSetConverter4Json('O'));
             return JsonSerializer.Serialize<T>(obj, options);
         }
 
@@ -28,23 +28,21 @@ namespace WeMakeTeamTask2
                 PropertyNameCaseInsensitive = true,                 
 
             };
-            options.Converters.Add(new DateTimeConverter4Json('O'));
+            options.Converters.Add(new DateTimeOffSetConverter4Json('O'));
             var entity = JsonSerializer.Deserialize<T>(json, options);            
             return entity;
         }
     }
 
-
-
-    public class DateTimeConverter4Json : JsonConverter<DateTime>
+    public class DateTimeOffSetConverter4Json : JsonConverter<DateTimeOffset>
     {
         readonly char _standartFormat;
-        public DateTimeConverter4Json(char standartFormat)
+        public DateTimeOffSetConverter4Json(char standartFormat)
         {
             _standartFormat = standartFormat;
         }
 
-        public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override DateTimeOffset Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             // Перевод пришедшего времени в local date.
 
@@ -59,25 +57,25 @@ namespace WeMakeTeamTask2
                 bytesValue[indexTZseparate] = 43;
                 if (Utf8Parser.TryParse(bytesValue, out DateTimeOffset value, out _, _standartFormat))
                 {
-                    return value.LocalDateTime;                   
+                    return value;
                 }
             }
             else
             {
                 // дополнительно проверка наличия разделителя тайм зоны 
                 if (reader.ValueSpan[indexTZseparate] != 43 || reader.ValueSpan[indexTZseparate] != 45)
-                    throw new FormatException( "Не верный формат даты. Не верно указана тайм зона.");
+                    throw new FormatException("Не верный формат даты. Не верно указана тайм зона.");
 
                 if (Utf8Parser.TryParse(reader.ValueSpan, out DateTimeOffset value, out _, _standartFormat))
                 {
-                    return value.LocalDateTime;
+                    return value;
                 }
-            }                                             
+            }
 
             throw new FormatException();
         }
 
-        public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, DateTimeOffset value, JsonSerializerOptions options)
         {
             // Для каждого формата свое кол-во байт 33 для O,
             // нужна доработка!
