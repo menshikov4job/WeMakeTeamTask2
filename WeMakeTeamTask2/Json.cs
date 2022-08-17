@@ -78,7 +78,7 @@ namespace WeMakeTeamTask2
         public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
         {
             // Р”Р»СЏ РєР°Р¶РґРѕРіРѕ С„РѕСЂРјР°С‚Р° СЃРІРѕРµ РєРѕР»-РІРѕ Р±Р°Р№С‚ 33 РґР»СЏ O,
-            // РЅСѓР¶РЅР° РґРѕСЂР°Р±РѕС‚РєР°!
+            // РЅСѓР¶РЅР° РґРѕСЂР°Р±РѕС‚РєР° !
             if (_standartFormat != 'O') throw new NotImplementedException();
             Span<byte> utf8Date = new byte[33];
 
