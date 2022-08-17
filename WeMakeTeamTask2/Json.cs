@@ -1,4 +1,4 @@
-п»їusing System.Buffers.Text;
+using System.Buffers.Text;
 using System.Buffers;
 using System.Text.Json.Serialization;
 using System.Text.Json;
@@ -44,16 +44,16 @@ namespace WeMakeTeamTask2
 
         public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            // РџРµСЂРµРІРѕРґ РїСЂРёС€РµРґС€РµРіРѕ РІСЂРµРјРµРЅРё РІ local date.
+            // Перевод пришедшего времени в local date.
 
             int indexTZseparate = 27;
-            // РљРѕСЃС‚С‹Р»СЊ - РµСЃР»Рё 27 СЃРёРјРІРѕР» РїСЂРѕР±РµР» (32) РјРµРЅСЏРµРј РµРіРѕ РЅР° '+' (43), РїРѕРёРґРµРё РєР»РёРµРЅС‚СЃРєР°СЏ СЃС‚РѕСЂРѕРЅР° РґРѕР»Р¶РЅР° Р·Р°РјРµРЅСЏС‚СЊ '+' РЅР° %2b
-            // Рё С‚РѕРіРґР° С‚СѓС‚ Р±СѓРґРµС‚ РїР»СЋСЃ РєР°Рє Рё РїРѕР»РѕР¶РµРЅРѕ!            
+            // Костыль - если 27 символ пробел (32) меняем его на '+' (43), поидеи клиентская сторона должна заменять '+' на %2b
+            // и тогда тут будет плюс как и положено!            
             if (reader.ValueSpan[indexTZseparate] == 32)
             {
                 Span<byte> bytesValue = new Span<byte>(new byte[reader.ValueSpan.Length]);
                 reader.ValueSpan.CopyTo(bytesValue);
-                // Р—Р°РјРµРЅР° РїСЂРѕР±РµР»Р° РЅР° РїР»СЋСЃ
+                // Замена пробела на плюс
                 bytesValue[indexTZseparate] = 43;
                 if (Utf8Parser.TryParse(bytesValue, out DateTimeOffset value, out _, _standartFormat))
                 {
@@ -62,9 +62,9 @@ namespace WeMakeTeamTask2
             }
             else
             {
-                // Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕ РїСЂРѕРІРµСЂРєР° РЅР°Р»РёС‡РёСЏ СЂР°Р·РґРµР»РёС‚РµР»СЏ С‚Р°Р№Рј Р·РѕРЅС‹ 
+                // Дополнительно проверка наличия разделителя тайм зоны 
                 if (reader.ValueSpan[indexTZseparate] != 43 || reader.ValueSpan[indexTZseparate] != 45)
-                    throw new FormatException( "РќРµ РІРµСЂРЅС‹Р№ С„РѕСЂРјР°С‚ РґР°С‚С‹. РќРµ РІРµСЂРЅРѕ СѓРєР°Р·Р°РЅР° С‚Р°Р№Рј Р·РѕРЅР°.");
+                    throw new FormatException( "Не верный формат даты. Не верно указана тайм зона.");
 
                 if (Utf8Parser.TryParse(reader.ValueSpan, out DateTimeOffset value, out _, _standartFormat))
                 {
@@ -77,8 +77,8 @@ namespace WeMakeTeamTask2
 
         public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
         {
-            // Р”Р»СЏ РєР°Р¶РґРѕРіРѕ С„РѕСЂРјР°С‚Р° СЃРІРѕРµ РєРѕР»-РІРѕ Р±Р°Р№С‚ 33 РґР»СЏ O,
-            // РЅСѓР¶РЅР° РґРѕСЂР°Р±РѕС‚РєР° !
+            // Для каждого формата свое кол-во байт 33 для O,
+            // нужна доработка !
             if (_standartFormat != 'O') throw new NotImplementedException();
             Span<byte> utf8Date = new byte[33];
 
