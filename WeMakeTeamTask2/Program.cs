@@ -93,7 +93,7 @@ async Task InsertEntity(string paramValue, HttpResponse response)
     }
     catch (ArgumentException ex)
     {
-        // поидее текст exception нельзя возвращать, вдруг чего лишнего там находится
+        // Поидее текст exception нельзя возвращать, вдруг чего лишнего там находится
         // но ни кода ошибки нет, ничего другого за что зацепится при вставке сущ-го Id
         await response.WriteAsJsonAsync(new { result = 0, errMessage = ex.Message, errCode = 203 });
     }
