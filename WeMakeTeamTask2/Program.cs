@@ -79,7 +79,7 @@ async Task InsertEntity(string paramValue, HttpResponse response)
             }
 
             //response.StatusCode = 201;
-            // успешно
+            // Успешно
             await response.WriteAsJsonAsync(
                     new { result = 1, note = "Данные добавлены" });
         }
