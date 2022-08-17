@@ -1,4 +1,4 @@
-﻿namespace WeMakeTeamTask2
+namespace WeMakeTeamTask2
 {
     public class Entity
     {
