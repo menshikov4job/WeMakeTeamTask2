@@ -21,7 +21,7 @@
             }
         }
 
-        // вместо DateTime лучше использовать DateTimeOffset
+        // Вместо DateTime лучше использовать DateTimeOffset
         public DateTime OperationDate 
         {
             get => _operationDate;            
