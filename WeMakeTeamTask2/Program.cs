@@ -55,8 +55,6 @@ app.Run(async (context) =>
 
 app.Run();
 
-
-
 async Task InsertEntity(string paramValue, HttpResponse response)
 {
     try

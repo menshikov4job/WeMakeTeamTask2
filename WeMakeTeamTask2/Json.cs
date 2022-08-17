@@ -34,8 +34,6 @@ namespace WeMakeTeamTask2
         }
     }
 
-
-
     public class DateTimeConverter4Json : JsonConverter<DateTime>
     {
         readonly char _standartFormat;
@@ -49,13 +47,13 @@ namespace WeMakeTeamTask2
             // Перевод пришедшего времени в local date.
 
             int indexTZseparate = 27;
-            // костыль - если 27 символ пробел (32) меняем его на '+' (43), поидеи клиентская сторона должна заменять '+' на %2b
+            // Костыль - если 27 символ пробел (32) меняем его на '+' (43), поидеи клиентская сторона должна заменять '+' на %2b
             // и тогда тут будет плюс как и положено!            
             if (reader.ValueSpan[indexTZseparate] == 32)
             {
                 Span<byte> bytesValue = new Span<byte>(new byte[reader.ValueSpan.Length]);
                 reader.ValueSpan.CopyTo(bytesValue);
-                // замена пробела на плюс
+                // Замена пробела на плюс
                 bytesValue[indexTZseparate] = 43;
                 if (Utf8Parser.TryParse(bytesValue, out DateTimeOffset value, out _, _standartFormat))
                 {
@@ -64,7 +62,7 @@ namespace WeMakeTeamTask2
             }
             else
             {
-                // дополнительно проверка наличия разделителя тайм зоны 
+                // Дополнительно проверка наличия разделителя тайм зоны 
                 if (reader.ValueSpan[indexTZseparate] != 43 || reader.ValueSpan[indexTZseparate] != 45)
                     throw new FormatException( "Не верный формат даты. Не верно указана тайм зона.");
 
