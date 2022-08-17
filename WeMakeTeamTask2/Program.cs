@@ -21,7 +21,7 @@ app.Run(async (context) =>
     if (context.Request.Method != method)
     {
         await response.WriteAsJsonAsync(
-            new { result = 0, errMessage = "Неверный метод запроса!", errCode = 1, note = $"Доступен только {method} метод." });
+            new { result = 0, errMessage = "РќРµРІРµСЂРЅС‹Р№ РјРµС‚РѕРґ Р·Р°РїСЂРѕСЃР°!", errCode = 1, note = $"Р”РѕСЃС‚СѓРїРµРЅ С‚РѕР»СЊРєРѕ {method} РјРµС‚РѕРґ." });
         return;
     }
 
@@ -29,8 +29,8 @@ app.Run(async (context) =>
     if (request.Query.Count != 1)
     {
         await response.WriteAsJsonAsync(
-            new { result = 0, errMessage = $"Неверное кол-во параметров в запросе ({request.Query.Count})!", errCode = 101, 
-                note = "Должен быть один параметр." });
+            new { result = 0, errMessage = $"РќРµРІРµСЂРЅРѕРµ РєРѕР»-РІРѕ РїР°СЂР°РјРµС‚СЂРѕРІ РІ Р·Р°РїСЂРѕСЃРµ ({request.Query.Count})!", errCode = 101, 
+                note = "Р”РѕР»Р¶РµРЅ Р±С‹С‚СЊ РѕРґРёРЅ РїР°СЂР°РјРµС‚СЂ." });
         return;
     }
 
@@ -48,8 +48,8 @@ app.Run(async (context) =>
     else
     {
         await response.WriteAsJsonAsync(
-            new { rsult = 0, errMessage = "Отсутсвует нужный параметр в запросе!", errCode = 102, 
-                note = "Передайте один из параметров - insert, get" });
+            new { rsult = 0, errMessage = "РћС‚СЃСѓС‚СЃРІСѓРµС‚ РЅСѓР¶РЅС‹Р№ РїР°СЂР°РјРµС‚СЂ РІ Р·Р°РїСЂРѕСЃРµ!", errCode = 102, 
+                note = "РџРµСЂРµРґР°Р№С‚Рµ РѕРґРёРЅ РёР· РїР°СЂР°РјРµС‚СЂРѕРІ - insert, get" });
     }
 });
 
@@ -62,13 +62,13 @@ async Task InsertEntity(string paramValue, HttpResponse response)
         var entity = Json.CreateEntity<Entity>(paramValue);
         if (entity != null)
         {
-            // Тут какая нибуть проверка полученных данных, проверил были ли поля заполенены из json (переданы в запросе)
+            // РўСѓС‚ РєР°РєР°СЏ РЅРёР±СѓС‚СЊ РїСЂРѕРІРµСЂРєР° РїРѕР»СѓС‡РµРЅРЅС‹С… РґР°РЅРЅС‹С…, РїСЂРѕРІРµСЂРёР» Р±С‹Р»Рё Р»Рё РїРѕР»СЏ Р·Р°РїРѕР»РµРЅРµРЅС‹ РёР· json (РїРµСЂРµРґР°РЅС‹ РІ Р·Р°РїСЂРѕСЃРµ)
             string validateSetFields = entity.ValidateSetFields();
             if (!String.IsNullOrEmpty(validateSetFields))
             {
                 await response.WriteAsJsonAsync(
-                    new { result = 0, errMessage = $"Не все поля были заполнены: {validateSetFields}", errCode = 201, 
-                        note = "Проверьте наличие полей в запросе." });
+                    new { result = 0, errMessage = $"РќРµ РІСЃРµ РїРѕР»СЏ Р±С‹Р»Рё Р·Р°РїРѕР»РЅРµРЅС‹: {validateSetFields}", errCode = 201, 
+                        note = "РџСЂРѕРІРµСЂСЊС‚Рµ РЅР°Р»РёС‡РёРµ РїРѕР»РµР№ РІ Р·Р°РїСЂРѕСЃРµ." });
                 return;
             }
 
@@ -79,25 +79,25 @@ async Task InsertEntity(string paramValue, HttpResponse response)
             }
 
             //response.StatusCode = 201;
-            // Успешно
+            // РЈСЃРїРµС€РЅРѕ
             await response.WriteAsJsonAsync(
-                    new { result = 1, note = "Данные добавлены" });
+                    new { result = 1, note = "Р”Р°РЅРЅС‹Рµ РґРѕР±Р°РІР»РµРЅС‹" });
         }
         else
         {
             await response.WriteAsJsonAsync(
-                new { ressult = 0, messageErr = "Ошибка десериализации переданного JSON!", errCode = 202 });
+                new { ressult = 0, messageErr = "РћС€РёР±РєР° РґРµСЃРµСЂРёР°Р»РёР·Р°С†РёРё РїРµСЂРµРґР°РЅРЅРѕРіРѕ JSON!", errCode = 202 });
         }
     }
     catch (ArgumentException ex)
     {
-        // Поидее текст exception нельзя возвращать, вдруг чего лишнего там находится
-        // но ни кода ошибки нет, ничего другого за что зацепится при вставке сущ-го Id
+        // РџРѕРёРґРµРµ С‚РµРєСЃС‚ exception РЅРµР»СЊР·СЏ РІРѕР·РІСЂР°С‰Р°С‚СЊ, РІРґСЂСѓРі С‡РµРіРѕ Р»РёС€РЅРµРіРѕ С‚Р°Рј РЅР°С…РѕРґРёС‚СЃСЏ
+        // РЅРѕ РЅРё РєРѕРґР° РѕС€РёР±РєРё РЅРµС‚, РЅРёС‡РµРіРѕ РґСЂСѓРіРѕРіРѕ Р·Р° С‡С‚Рѕ Р·Р°С†РµРїРёС‚СЃСЏ РїСЂРё РІСЃС‚Р°РІРєРµ СЃСѓС‰-РіРѕ Id
         await response.WriteAsJsonAsync(new { result = 0, errMessage = ex.Message, errCode = 203 });
     }
     catch (Exception)
     {
-        await response.WriteAsJsonAsync(new { result = 0, errMessage = "Некорректные данные", errCode = 204 });
+        await response.WriteAsJsonAsync(new { result = 0, errMessage = "РќРµРєРѕСЂСЂРµРєС‚РЅС‹Рµ РґР°РЅРЅС‹Рµ", errCode = 204 });
     }
 }
 
@@ -119,11 +119,11 @@ async Task GetEntity(string paramValue, HttpResponse response)
         }
         else
         {
-            await response.WriteAsJsonAsync(new { result = 0, errMessage = "Не верный Id!", errCode = 301 });
+            await response.WriteAsJsonAsync(new { result = 0, errMessage = "РќРµ РІРµСЂРЅС‹Р№ Id!", errCode = 301 });
         }
     }
     catch (Exception)
     {
-        await response.WriteAsJsonAsync(new { result = 0, errMessage = "Некорректные данные", errCode = 302 });
+        await response.WriteAsJsonAsync(new { result = 0, errMessage = "РќРµРєРѕСЂСЂРµРєС‚РЅС‹Рµ РґР°РЅРЅС‹Рµ", errCode = 302 });
     }
 }
